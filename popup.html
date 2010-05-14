@@ -1,0 +1,67 @@
+<html>
+<head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script>  // Saves options to localStorage.
+  testv = "";
+  function sendCommand(cmd) {
+    chrome.tabs.getSelected(null, function(tab) {
+      chrome.tabs.sendRequest(tab.id, {command: cmd}, function(response) {
+        testv = response;
+        $('#top').val(response['topOffset']);
+        $('#left').val(response['leftOffset']);
+      });
+    });
+  }
+  function save_options() {
+    chrome.extension.sendRequest({
+      method: "saveSettings",
+      data:{
+        domain    : $('#domain').val(),
+        comp      : $('#comp').val(),
+        leftOffset: $('#left').val(),
+        topOffset : $('#top').val()
+      }
+    }, function(response) {}); 
+
+    // Update status to let user know options were saved.
+    var status = document.getElementById("status");
+    status.innerHTML = "Options Saved.";
+    setTimeout(function() {
+      status.innerHTML = "";
+    }, 750);
+  }
+
+  // Restores select box state to saved value from localStorage.
+  function restore_options() {
+    chrome.extension.sendRequest({method: 'settings'}, function(response) {
+      $('#domain').val(response.data['domain']);
+      $('#comp').val(response.data['comp']);
+      $('#left').val(response.data['leftOffset']);
+      $('#top').val(response.data['topOffset']);
+    });
+  }
+  $(document).ready(restore_options());
+</script>
+</head>
+<body>
+  <div id="status"></div>
+
+  <a href="#" onclick="sendCommand('up'); return false;">up</a>
+  <a href="#" onclick="sendCommand('down'); return false;">down</a>
+  <a href="#" onclick="sendCommand('left'); return false;">left</a>
+  <a href="#" onclick="sendCommand('right'); return false;">right</a>
+  <br/>
+  <a href="#" onclick="sendCommand('lighter'); return false;">lighter</a>
+  <a href="#" onclick="sendCommand('darker'); return false;">darker</a>
+  <br/>
+  <a href="#" onclick="sendCommand('top'); return false;">top</a>
+  <a href="#" onclick="sendCommand('bottom'); return false;">bottom</a>
+  <br/>
+  Left: <input id="left" type="text">
+  Top: <input id="top" type="text">
+  Domain to match: <input id="domain" type="text">
+  Comp file to load: <input id="comp" type="text">
+  <br/>
+  <button onclick="save_options()">Save</button>
+</body>
+</html>

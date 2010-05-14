@@ -1,0 +1,20 @@
+{
+  "name": "Pixel Good Enough",
+  "version": "0.1",
+  "description": "Overlay a image comp on a website.",
+  "background_page": "background.html",
+  "options_page": "options.html",
+  "browser_action": {
+    "default_icon": "icon.png",
+    "popup": "popup.html"
+  },
+  "permissions": [
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*"],
+      "js": ["jquery.js", "overlay.js"]
+    }
+  ]
+}

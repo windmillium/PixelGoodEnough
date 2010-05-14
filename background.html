@@ -1,0 +1,31 @@
+<html>
+<head>
+<script type="text/javascript">
+  // Listen requests from the content script.
+  chrome.extension.onRequest.addListener( 
+    function(request, sender, sendResponse) {
+        switch(request.method)
+        {
+        case 'settings':
+          sendResponse({data: {
+            'domain':localStorage['domain'],
+            'comp':localStorage['comp'],
+            'leftOffset':localStorage['leftOffset'],
+            'topOffset':localStorage['topOffset']
+          }});
+          break;
+        case 'saveSettings':
+          localStorage["topOffset"] = request.data['topOffset'];
+          localStorage["leftOffset"] = request.data['leftOffset'];
+          localStorage['domain'] = request.data['domain'];
+          localStorage['comp'] = request.data['comp'];
+          break;
+        default:
+          sendResponse({}); // snub them.
+        }
+      });
+</script>
+</head>
+<body>
+</body>
+</html>
