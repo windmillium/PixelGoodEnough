@@ -1,6 +1,173 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<style type="text/css">
+
+body {
+	width:200px;
+	padding:0 0 20px;
+	font-size:14px;
+	font-family:futura;
+	color:#222;
+	background:-webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.21, rgb(230,230,230)),
+    color-stop(0.61, rgb(255,248,255))
+)
+}
+
+/* Type */
+
+h1 {font-size:14px;letter-spacing:1px;}
+a:hover,
+.comp:hover,
+.page:hover {-webkit-transition:all .5s ease-in;}
+
+i {display:block;font-size:12px;padding-bottom:4px;color:#666;}
+
+.left {float:left;}
+.right {float:right;}
+.clear {clear:both;}
+
+/* Directions */
+#directions {
+	position:relative;
+	top:-10px;
+	width:89px;height:89px;
+	margin:0 auto -10px;
+	border-radius:50px;
+	background:-webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.44, rgb(26,58,85)),
+    color-stop(0.72, rgb(52,87,111)),
+    color-stop(0.88, rgb(78,114,145))
+);
+	border:1px solid #000;
+	-webkit-box-shadow:0 0 3px #000;
+}
+#directions a {
+	position:absolute;
+	display:block;
+	width:30px;height:30px;
+	text-indent:-9999px;
+	background:#000;
+	border:2px solid #fff;
+	border-radius:10px;
+	-webkit-border-top-right-radius:0;
+	-webkit-border-bottom-left-radius:20px;
+}
+#directions a:hover {background:#444;}
+#directions a:active {background:#900;}
+
+a#nudge_up {top:0;left:28px;-webkit-transform:rotate(-45deg);}
+a#nudge_right {top:28px;right:0;-webkit-transform:rotate(45deg);}
+a#nudge_down {bottom:0;left:28px;-webkit-transform:rotate(135deg);}
+a#nudge_left {top:28px;left:0;-webkit-transform:rotate(-135deg);}
+
+a#nudge_up:hover,
+a#nudge_up:focus {top:-5px;}
+a#nudge_right:hover,
+a#nudge_right:focus {right:-5px;}
+a#nudge_down:hover,
+a#nudge_down:focus {bottom:-5px;}
+a#nudge_left:hover,
+a#nudge_left:focus {left:-5px;}
+
+/* Alpha */
+
+#alpha {
+	width:66px;height:50px;
+	margin:-10px auto -20px;
+}
+
+#alpha a {
+	display:block;
+	width:24px;height:30px;
+	line-height:30px;
+	text-align:center;
+	text-decoration:none;
+	border:2px dashed #000;
+}
+
+#alpha a[title=Lighter] {color:#000;background:#ccc;}
+#alpha a[title=Darker] {color:#fff;background:#666;border-color:#ccc;}
+
+#alpha a[title=Lighter]:hover {background:#fff;}
+#alpha a[title=Darker]:hover {background:#000;}
+
+/* Order */
+
+#order {position:relative;top:-20px;height:30px;}
+#order a {display:block;width:80px;height:36px;overflow:hidden;}
+
+/* inner leafs */
+.comp div {width:100%;height:100%;background:-webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.05, rgb(216,40,23)),
+    color-stop(0.53, rgb(255,68,51)),
+    color-stop(0.77, rgb(255,96,77))
+);}
+.page div {width:100%;height:100%;background:#000;}
+
+.comp,
+.page {
+	position:relative;
+	left:-60px;
+	width:40px;height:15px;
+	padding:15px 80px;
+	-webkit-transform:skew(-70deg);
+}
+
+/* move to top */
+#move-top {position:relative;left:14px;}
+#move-top .comp {top:2px;z-index:1;}
+#move-top .page {top:-40px;}
+#move-top .comp:hover {top:-6px;}
+
+/* move to bottom */
+#move-bottom {position:relative;right:15px;top:6px;height;}
+#move-bottom .comp {top:-4px;z-index:1;}
+#move-bottom .page {top:-46px;}
+#move-bottom .comp:hover {top:4px;opacity:.5;}
+
+/* Text Boxes */
+
+/* tiny boxes */
+.half {width:50%;}
+.number {width:40px;}
+
+/* large boxes */
+.long {width:70px;}
+input.right {width:120px;}
+
+/* pulse glow on boxes */
+input {
+	border:0;
+	border-bottom:2px dashed #666;
+	-webkit-border-top-right-radius:5px;
+	-webkit-border-top-left-radius:5px;
+	background:transparent;
+	outline:none;
+}
+input:active {-webkit-box-shadow:0 0 5px rgba(160,0,0,1);}
+input:focus {-webkit-animation:glow 3s infinite ease-in-out;}
+@-webkit-keyframes glow {
+	0% {-webkit-box-shadow:0 0 5px rgba(0,0,160,.25);}
+	50% {-webkit-box-shadow:0 0 5px rgba(0,0,160,.75);}
+	100% {-webkit-box-shadow:0 0 5px rgba(0,0,160,.25);}
+}
+
+button {margin-top:4px;}
+
+</style>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script>  // Saves options to localStorage.
   testv = "";
   function sendCommand(cmd) {
@@ -46,22 +213,37 @@
 <body>
   <div id="status"></div>
 
-  <a href="#" onclick="sendCommand('up'); return false;">up</a>
-  <a href="#" onclick="sendCommand('down'); return false;">down</a>
-  <a href="#" onclick="sendCommand('left'); return false;">left</a>
-  <a href="#" onclick="sendCommand('right'); return false;">right</a>
-  <br/>
-  <a href="#" onclick="sendCommand('lighter'); return false;">lighter</a>
-  <a href="#" onclick="sendCommand('darker'); return false;">darker</a>
-  <br/>
-  <a href="#" onclick="sendCommand('top'); return false;">top</a>
-  <a href="#" onclick="sendCommand('bottom'); return false;">bottom</a>
-  <br/>
-  Left: <input id="left" type="text">
-  Top: <input id="top" type="text">
-  Domain to match: <input id="domain" type="text">
-  Comp file to load: <input id="comp" type="text">
-  <br/>
-  <button onclick="save_options()">Save</button>
+	<h1>Nudge</h1>
+	<div id="directions">
+	  <a href="#" onclick="sendCommand('up'); return false;" id="nudge_up" title="Nudge Up">up</a>
+	  <a href="#" onclick="sendCommand('right'); return false;" id="nudge_right" title="Nudge Right">right</a>
+	  <a href="#" onclick="sendCommand('down'); return false;" id="nudge_down" title="Nudge Down">down</a>
+	  <a href="#" onclick="sendCommand('left'); return false;" id="nudge_left" title="Nudge Left">left</a>
+  	</div>
+  	
+  	<h1>Alpha</h1>
+  	<div id="alpha">
+	  <a href="#" onclick="sendCommand('lighter'); return false;" title="Lighter" class="left">A</a>
+	  <a href="#" onclick="sendCommand('darker'); return false;" title="Darker" class="right">A</a>
+  	</div>
+
+    <h1>Order</h1>
+    <div id="order">
+      <div class="left"><a href="#" onclick="sendCommand('top'); return false;" id="move-top" title="Move Comp to Top"><div class="comp"><div></div></div><div class="page"><div></div></div></a></div>
+      <div class="right"><a href="#" onclick="sendCommand('bottom'); return false;" id="move-bottom" title="Move Comp to Bottom"><div class="comp"><div></div></div><div class="page"><div></div></div></a></div>
+    </div>
+    
+    <h1>Stats</h1>
+    
+    <div class="half left"><label for="left">Left:</label> <input id="left" type="text" class="number" /></div>
+    <div class="half left"><label for="top">Top:</label> <input id="top" type="text" class="number" /></div>
+    <label for="domain" class="long left">Domain:</label> <input id="domain" type="text" class="right" />
+    <i class="clear">e.g. www.myblog.com</i>
+    <label for="comp" class="long left">Comp File:</label> <input id="comp" type="text" class="right" />
+    <i class="clear">e.g. /images/comp.jpg</i>
+    <button onclick="save_options()" class="right clear">Save</button>
+    
+    <div class="clear"></div>
+    
 </body>
 </html>
